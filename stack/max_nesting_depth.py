@@ -8,7 +8,7 @@ class Solution:
             if c == ")":
                 stack.pop()
             elif c == "(":
-                stack.append("()")
+                stack.append("(")
             ans = max(ans, len(stack))
         return ans
 
