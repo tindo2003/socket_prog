@@ -1,5 +1,6 @@
 from typing import List 
 class Solution:
+  # union find
   def equationsPossible(self, equations: List[str]) -> bool:
     parents = [i for i in range(26)]
     def find_parent(x):
