@@ -19,7 +19,6 @@ class Solution:
                 multiplier_stack.append(number)
                 prev_str_stack.append(word)
                 word = ""
-                print(prev_str_stack)
             elif c == "]":
                 multiplier = multiplier_stack.pop()
                 prev_str = prev_str_stack.pop()
