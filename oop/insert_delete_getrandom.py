@@ -1,18 +1,35 @@
+import random
+
 class RandomizedSet:
 
     def __init__(self):
-       pass 
+       self.arr = [] 
+       self.my_dict = {}
 
     def insert(self, val: int) -> bool:
-        pass
+        if val in self.my_dict:
+            return False 
+        self.my_dict[val] = len(self.arr)
+        self.arr.append(val)
+        return True
         
 
     def remove(self, val: int) -> bool:
-        pass
-        
+        if not val in self.my_dict:
+            return False 
+        val_idx = self.my_dict[val]
+        tmp = self.arr[-1]
+        self.my_dict[tmp] = val_idx
+        self.arr[-1] = val 
+        self.arr[val_idx] = tmp 
+        # the idea is removing the array at the end is O(1) time
+        self.arr.pop()
+        del self.my_dict[val]
+        return True 
+
 
     def getRandom(self) -> int:
-        pass
+        return random.choice(self.arr)
         
 
 
