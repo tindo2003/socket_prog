@@ -11,5 +11,5 @@ class Solution:
                 del my_dict[s[l]]
                 l += 1
             my_dict[cur_ele] = 1
-            res = max(res, r-l + 1)
+            res = max(res, r - l + 1)
         return res

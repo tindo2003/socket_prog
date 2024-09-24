@@ -7,8 +7,8 @@ class Solution:
             idx = my_dict[c]
             arr[idx] += 1
             if idx != 0: 
-                arr[idx-1] -= 1
-                if arr[idx-1] < 0: return -1
+                arr[idx - 1] -= 1
+                if arr[idx - 1] < 0: return -1
             res = max(res, sum(arr[:4]))
         if sum(arr[:4]) != 0:
             return -1 
