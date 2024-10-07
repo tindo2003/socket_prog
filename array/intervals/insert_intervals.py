@@ -22,6 +22,7 @@ class Solution:
         # now it is time to merge 
         stack = []
         for item in new_lst:
+            # current start time greater than previous end time
             if not stack or stack[-1][1] < item[0]:
                 stack.append(item)
             else:
