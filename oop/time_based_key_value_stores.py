@@ -1,29 +1,36 @@
-from collections import defaultdict
 class TimeMap:
 
     def __init__(self):
-        self.items = defaultdict(list)
+        self.keyToTime = {}
 
     def set(self, key: str, value: str, timestamp: int) -> None:
-        self.items[key].append((value, timestamp))
+        if key not in self.keyToTime:
+            self.keyToTime[key] = [(timestamp, value)]
+        else:
+            self.keyToTime[key].append((timestamp, value))
 
     def get(self, key: str, timestamp: int) -> str:
-        cur_lst = self.items[key]
-        l = 0 
-        r = len(cur_lst) - 1
-        res = -1 
+        if key not in self.keyToTime:
+            return ""
+        my_arr = self.keyToTime[key]
+        idx = self.bin_search(timestamp, my_arr)
+        if idx == -1:
+            return ""
+        return my_arr[idx][1]
+
+    def bin_search(self, tgt, arr):
+        # find element <= tgt
+        l, r = 0, len(arr) - 1
+        res = -1
         while l <= r:
             mid = (l + r) // 2
-            cur_time = cur_lst[mid][1]
-            if cur_time == timestamp:
-                return cur_lst[mid][0]
-            elif cur_time > timestamp:
-                r = mid - 1
-            else:
-                res = cur_lst[mid][0]
+            mid_ele = arr[mid][0]
+            if mid_ele <= tgt:
+                res = mid
                 l = mid + 1
-        return res if res != -1 else ""
-                
+            else:
+                r = mid - 1
+        return res
 
 
 # Your TimeMap object will be instantiated and called as such:
