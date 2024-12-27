@@ -4,7 +4,7 @@ from collections import defaultdict
 
 class Solution:
     def partitionLabels(self, s: str) -> List[int]:
-        # objective: merge intervals. extend the tail if found an overlapping interval with longer tail
+        # objective: merge intervals. extend the end if found an overlapping interval with longer end
         my_dict = defaultdict(
             lambda: [float("inf"), float("-inf")]
         )  # Default values: [min_index, max_index]
@@ -14,6 +14,7 @@ class Solution:
             my_dict[c][1] = max(my_dict[c][1], i)
 
         itvs = list(my_dict.values())
+        # sort by start time
         itvs.sort(key=lambda x: x[0])
         stack = [itvs[0]]
         for s, e in itvs[1:]:
