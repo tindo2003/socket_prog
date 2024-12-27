@@ -6,8 +6,8 @@ class Solution:
         for i in range(1, N + 1):
             for j in range(1, M + 1):
                 actual_i = i - 1
-                acutal_j = j - 1
-                if text1[actual_i] == text2[acutal_j]:
+                actual_j = j - 1
+                if text1[actual_i] == text2[actual_j]:
                     dp[i][j] = dp[i - 1][j - 1] + 1
                 else:
                     dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
