@@ -10,17 +10,16 @@ class ListNode:
 
 class Solution:
     def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        new_head = head
-        prev = ListNode(next=head)
+        # KEEP A PREV PTR
+        dummy = ListNode(next=head)
+        prev = dummy
         cur = head
         while cur and cur.next:
-            fast = cur.next
-            cur.next = fast.next
-            fast.next = cur
-            prev.next = fast
-            # get the new head so I know what to return.
-            if cur == head:
-                new_head = fast
+            neighbor = cur.next
+            cur.next = neighbor.next
+            neighbor.next = cur
+            # ~~~~~~~~~
+            prev.next = neighbor
             prev = cur
             cur = cur.next
-        return new_head
+        return dummy.next
