@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>LC checklist</title>
+        <title>LC Checklist (with Delete)</title>
         <!-- Include Tailwind CSS from CDN for styling -->
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
@@ -30,12 +30,6 @@
                 font-size: 0.75rem;
             }
         </style>
-        <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="amazon_logo.jpg"
-        />
     </head>
     <body class="bg-gray-100 text-gray-800">
         <div class="max-w-screen-lg mx-auto p-6">
@@ -76,68 +70,36 @@
                 </button>
             </div>
 
+            <!-- Form to add new problems -->
+            <section class="mb-6">
+                <h2 class="text-xl font-semibold mb-2">Add a New Problem</h2>
+                <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                    <input
+                        type="text"
+                        id="problemName"
+                        placeholder="Problem Name (e.g., 'Two Sum')"
+                        class="border border-gray-300 rounded px-2 py-1 flex-1"
+                    />
+                    <input
+                        type="text"
+                        id="problemLink"
+                        placeholder="Problem Link (e.g., 'https://leetcode.com/...')"
+                        class="border border-gray-300 rounded px-2 py-1 flex-1"
+                    />
+                </div>
+                <button
+                    onclick="addProblem()"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow"
+                >
+                    Add Problem
+                </button>
+            </section>
+
             <!-- Daily LeetCode Checklist -->
             <section>
                 <h2 class="text-xl font-semibold mb-4">Today’s Checklist</h2>
-                <div id="checklist" class="space-y-3">
-                    <!-- Example items for daily progress. Add or remove as you like. -->
-                    <div class="flex items-start space-x-2">
-                        <input
-                            type="checkbox"
-                            class="mt-1 w-5 h-5"
-                            id="problem-1"
-                        />
-                        <label for="problem-1" class="text-lg"
-                            >LeetCode Problem #1</label
-                        >
-                    </div>
-
-                    <div class="flex items-start space-x-2">
-                        <input
-                            type="checkbox"
-                            class="mt-1 w-5 h-5"
-                            id="problem-2"
-                        />
-                        <label for="problem-2" class="text-lg"
-                            >LeetCode Problem #2</label
-                        >
-                    </div>
-
-                    <div class="flex items-start space-x-2">
-                        <input
-                            type="checkbox"
-                            class="mt-1 w-5 h-5"
-                            id="problem-3"
-                        />
-                        <label for="problem-3" class="text-lg"
-                            >LeetCode Problem #3</label
-                        >
-                    </div>
-
-                    <div class="flex items-start space-x-2">
-                        <input
-                            type="checkbox"
-                            class="mt-1 w-5 h-5"
-                            id="problem-4"
-                        />
-                        <label for="problem-4" class="text-lg"
-                            >LeetCode Problem #4</label
-                        >
-                    </div>
-
-                    <div class="flex items-start space-x-2">
-                        <input
-                            type="checkbox"
-                            class="mt-1 w-5 h-5"
-                            id="problem-5"
-                        />
-                        <label for="problem-5" class="text-lg"
-                            >LeetCode Problem #5</label
-                        >
-                    </div>
-
-                    <!-- Add more checkboxes here if you want more than 5 problems -->
-                </div>
+                <!-- We'll render the problem list inside this container -->
+                <div id="checklist" class="space-y-3"></div>
             </section>
 
             <!-- Progress Bar -->
@@ -158,44 +120,223 @@
             </footer>
         </div>
 
-        <!-- Simple JS for Check/Uncheck and Dynamic Progress -->
+        <!-- Simple JS for Check/Uncheck, Dynamic Progress, and Persistence -->
         <script>
-            // On page load, attach event listeners to all checkboxes
+            // ------------------------------------------------------------------
+            // 1. Global array to hold problems and state (loaded from localStorage)
+            // ------------------------------------------------------------------
+            let problems = [];
+
+            // ------------------------------------------------------------------
+            // 2. On page load, restore from localStorage OR set default problems
+            // ------------------------------------------------------------------
             window.addEventListener("DOMContentLoaded", () => {
-                const checkboxes = document.querySelectorAll(
-                    '#checklist input[type="checkbox"]'
-                );
-                checkboxes.forEach((cb) => {
-                    cb.addEventListener("change", updateProgress);
-                });
-                updateProgress(); // Initialize progress bar
+                loadProblemsFromLocalStorage();
+                renderProblems();
+                updateProgress();
             });
 
-            function checkAll() {
-                const checkboxes = document.querySelectorAll(
-                    '#checklist input[type="checkbox"]'
-                );
-                checkboxes.forEach((cb) => (cb.checked = true));
-                updateProgress();
+            // ------------------------------------------------------------------
+            // 3. Load problems from localStorage
+            // ------------------------------------------------------------------
+            function loadProblemsFromLocalStorage() {
+                const data = localStorage.getItem("lcChecklist");
+                if (data) {
+                    try {
+                        problems = JSON.parse(data);
+                    } catch (e) {
+                        console.error(
+                            "Error parsing stored checklist data:",
+                            e
+                        );
+                        problems = [];
+                    }
+                } else {
+                    // If no data in localStorage, set up some default items (optional)
+                    problems = [
+                        {
+                            id: "default-1",
+                            name: "LeetCode Problem #1",
+                            link: "",
+                            checked: false,
+                        },
+                        {
+                            id: "default-2",
+                            name: "LeetCode Problem #2",
+                            link: "",
+                            checked: false,
+                        },
+                        {
+                            id: "default-3",
+                            name: "LeetCode Problem #3",
+                            link: "",
+                            checked: false,
+                        },
+                        {
+                            id: "default-4",
+                            name: "LeetCode Problem #4",
+                            link: "",
+                            checked: false,
+                        },
+                        {
+                            id: "default-5",
+                            name: "LeetCode Problem #5",
+                            link: "",
+                            checked: false,
+                        },
+                    ];
+                }
             }
 
-            function uncheckAll() {
-                const checkboxes = document.querySelectorAll(
-                    '#checklist input[type="checkbox"]'
-                );
-                checkboxes.forEach((cb) => (cb.checked = false));
-                updateProgress();
+            // ------------------------------------------------------------------
+            // 4. Save problems to localStorage
+            // ------------------------------------------------------------------
+            function saveProblemsToLocalStorage() {
+                localStorage.setItem("lcChecklist", JSON.stringify(problems));
             }
 
-            function updateProgress() {
-                const checkboxes = document.querySelectorAll(
-                    '#checklist input[type="checkbox"]'
-                );
-                const total = checkboxes.length;
-                let completed = 0;
-                checkboxes.forEach((cb) => {
-                    if (cb.checked) completed += 1;
+            // ------------------------------------------------------------------
+            // 5. Render the problems array to the DOM
+            // ------------------------------------------------------------------
+            function renderProblems() {
+                const checklistDiv = document.getElementById("checklist");
+                checklistDiv.innerHTML = ""; // Clear any existing DOM
+
+                problems.forEach((problem) => {
+                    // Create container div
+                    const containerDiv = document.createElement("div");
+                    containerDiv.className = "flex items-center space-x-2";
+
+                    // Create checkbox
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.className = "mt-1 w-5 h-5";
+                    checkbox.id = problem.id;
+                    checkbox.checked = problem.checked;
+
+                    // Attach event to update the problem's checked status
+                    checkbox.addEventListener("change", () => {
+                        problem.checked = checkbox.checked;
+                        saveProblemsToLocalStorage();
+                        updateProgress();
+                    });
+
+                    // Create label
+                    const label = document.createElement("label");
+                    label.setAttribute("for", problem.id);
+                    label.className = "text-lg";
+
+                    // If there's a link, make it clickable
+                    if (problem.link) {
+                        const anchor = document.createElement("a");
+                        anchor.href = problem.link;
+                        anchor.target = "_blank";
+                        anchor.textContent = problem.name;
+                        label.appendChild(anchor);
+                    } else {
+                        label.textContent = problem.name;
+                    }
+
+                    // Create a delete button
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className =
+                        "ml-2 bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-sm";
+                    deleteButton.textContent = "Delete";
+                    deleteButton.addEventListener("click", () => {
+                        deleteProblem(problem.id);
+                    });
+
+                    // Append elements to container
+                    containerDiv.appendChild(checkbox);
+                    containerDiv.appendChild(label);
+                    containerDiv.appendChild(deleteButton);
+
+                    // Append container to checklist
+                    checklistDiv.appendChild(containerDiv);
                 });
+            }
+
+            // ------------------------------------------------------------------
+            // 6. Add a new problem
+            // ------------------------------------------------------------------
+            function addProblem() {
+                const nameInput = document.getElementById("problemName");
+                const linkInput = document.getElementById("problemLink");
+                const nameValue = nameInput.value.trim();
+                const linkValue = linkInput.value.trim();
+
+                // Basic validation
+                if (!nameValue) {
+                    alert("Please enter a problem name!");
+                    return;
+                }
+
+                // Create a unique ID using Date.now
+                const uniqueId = "problem-" + Date.now();
+
+                // Add to our in-memory array
+                problems.push({
+                    id: uniqueId,
+                    name: nameValue,
+                    link: linkValue,
+                    checked: false,
+                });
+
+                // Persist to localStorage
+                saveProblemsToLocalStorage();
+
+                // Clear the form inputs
+                nameInput.value = "";
+                linkInput.value = "";
+
+                // Re-render to show the new problem
+                renderProblems();
+
+                // Update progress bar
+                updateProgress();
+            }
+
+            // ------------------------------------------------------------------
+            // 7. Delete a problem by its ID
+            // ------------------------------------------------------------------
+            function deleteProblem(problemId) {
+                // Filter out the deleted problem
+                problems = problems.filter((p) => p.id !== problemId);
+
+                // Save changes to localStorage
+                saveProblemsToLocalStorage();
+
+                // Re-render and update the progress bar
+                renderProblems();
+                updateProgress();
+            }
+
+            // ------------------------------------------------------------------
+            // 8. Check All
+            // ------------------------------------------------------------------
+            function checkAll() {
+                problems.forEach((p) => (p.checked = true));
+                saveProblemsToLocalStorage();
+                renderProblems();
+                updateProgress();
+            }
+
+            // ------------------------------------------------------------------
+            // 9. Uncheck All
+            // ------------------------------------------------------------------
+            function uncheckAll() {
+                problems.forEach((p) => (p.checked = false));
+                saveProblemsToLocalStorage();
+                renderProblems();
+                updateProgress();
+            }
+
+            // ------------------------------------------------------------------
+            // 10. Update the progress bar
+            // ------------------------------------------------------------------
+            function updateProgress() {
+                const total = problems.length;
+                const completed = problems.filter((p) => p.checked).length;
 
                 // Calculate the completion percentage
                 const percentage = total
