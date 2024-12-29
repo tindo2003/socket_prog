@@ -1,20 +1,15 @@
+from math import inf
+from typing import List
+
+
 class Solution:
     def maxChunksToSorted(self, arr: List[int]) -> int:
-        # the trick is here to keep the maximum has seen so far on the stack.
-        # so if current ele is greater than top of stack, we know it is safe to append on top of the stack
-        # motonic increasing stack
-        stack = [] 
         N = len(arr)
+        max_so_far = -inf
+        res = 0
         for idx in range(N):
-            # keep track of the min and max
-            cur_ele = arr[idx]
-            if not stack or stack[-1] < cur_ele:
-                stack.append(cur_ele)
-            else:
-                cur_max = stack[-1]
-                while stack:
-                    if stack[-1] > cur_ele:
-                        stack.pop()
-                    else: break
-                stack.append(cur_max)
-        return len(stack)
+            max_so_far = max(max_so_far, arr[idx])
+            if max_so_far == idx:
+                max_so_far = -inf
+                res += 1
+        return res

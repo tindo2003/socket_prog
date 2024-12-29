@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>LC checklist</title>
+        <!-- Include Tailwind CSS from CDN for styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            /* Minimal custom styling for the progress bar container */
+            .progress-container {
+                background-color: #e5e7eb; /* Light gray background */
+                border-radius: 4px;
+                position: relative;
+                overflow: hidden;
+                height: 20px;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            /* The colored bar itself */
+            .progress-bar {
+                background-color: #3b82f6; /* Tailwind's 'blue-500' */
+                height: 100%;
+                width: 0;
+                transition: width 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 0.75rem;
+            }
+        </style>
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="amazon_logo.jpg"
+        />
+    </head>
+    <body class="bg-gray-100 text-gray-800">
+        <div class="max-w-screen-lg mx-auto p-6">
+            <!-- Motivational Header -->
+            <header class="mb-6">
+                <h1 class="text-3xl font-bold mb-2">
+                    Stay Motivated with LeetCode!
+                </h1>
+                <p class="text-lg italic">
+                    “<strong>Believe you can</strong> and you're halfway
+                    there.”<br />
+                    – Theodore Roosevelt
+                </p>
+            </header>
+
+            <!-- Instructional Text -->
+            <section class="mb-6">
+                <p class="text-base">
+                    Set a goal to solve at least
+                    <span class="font-bold">5 LeetCode problems</span> a day.
+                    Remember, consistency beats motivation every time!
+                </p>
+            </section>
+
+            <!-- Buttons to Check/Uncheck All -->
+            <div class="flex space-x-4 mb-6">
+                <button
+                    onclick="checkAll()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
+                >
+                    Check All
+                </button>
+                <button
+                    onclick="uncheckAll()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded shadow"
+                >
+                    Uncheck All
+                </button>
+            </div>
+
+            <!-- Daily LeetCode Checklist -->
+            <section>
+                <h2 class="text-xl font-semibold mb-4">Today’s Checklist</h2>
+                <div id="checklist" class="space-y-3">
+                    <!-- Example items for daily progress. Add or remove as you like. -->
+                    <div class="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            class="mt-1 w-5 h-5"
+                            id="problem-1"
+                        />
+                        <label for="problem-1" class="text-lg"
+                            >LeetCode Problem #1</label
+                        >
+                    </div>
+
+                    <div class="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            class="mt-1 w-5 h-5"
+                            id="problem-2"
+                        />
+                        <label for="problem-2" class="text-lg"
+                            >LeetCode Problem #2</label
+                        >
+                    </div>
+
+                    <div class="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            class="mt-1 w-5 h-5"
+                            id="problem-3"
+                        />
+                        <label for="problem-3" class="text-lg"
+                            >LeetCode Problem #3</label
+                        >
+                    </div>
+
+                    <div class="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            class="mt-1 w-5 h-5"
+                            id="problem-4"
+                        />
+                        <label for="problem-4" class="text-lg"
+                            >LeetCode Problem #4</label
+                        >
+                    </div>
+
+                    <div class="flex items-start space-x-2">
+                        <input
+                            type="checkbox"
+                            class="mt-1 w-5 h-5"
+                            id="problem-5"
+                        />
+                        <label for="problem-5" class="text-lg"
+                            >LeetCode Problem #5</label
+                        >
+                    </div>
+
+                    <!-- Add more checkboxes here if you want more than 5 problems -->
+                </div>
+            </section>
+
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar">0%</div>
+            </div>
+
+            <!-- Additional Motivation -->
+            <footer class="mt-10 pt-6 border-t border-gray-300">
+                <p class="text-base">
+                    Keep going! Each problem you solve makes you better and
+                    boosts your confidence.<br />
+                    <strong
+                        >Your future success is built one problem at a
+                        time!</strong
+                    >
+                </p>
+            </footer>
+        </div>
+
+        <!-- Simple JS for Check/Uncheck and Dynamic Progress -->
+        <script>
+            // On page load, attach event listeners to all checkboxes
+            window.addEventListener("DOMContentLoaded", () => {
+                const checkboxes = document.querySelectorAll(
+                    '#checklist input[type="checkbox"]'
+                );
+                checkboxes.forEach((cb) => {
+                    cb.addEventListener("change", updateProgress);
+                });
+                updateProgress(); // Initialize progress bar
+            });
+
+            function checkAll() {
+                const checkboxes = document.querySelectorAll(
+                    '#checklist input[type="checkbox"]'
+                );
+                checkboxes.forEach((cb) => (cb.checked = true));
+                updateProgress();
+            }
+
+            function uncheckAll() {
+                const checkboxes = document.querySelectorAll(
+                    '#checklist input[type="checkbox"]'
+                );
+                checkboxes.forEach((cb) => (cb.checked = false));
+                updateProgress();
+            }
+
+            function updateProgress() {
+                const checkboxes = document.querySelectorAll(
+                    '#checklist input[type="checkbox"]'
+                );
+                const total = checkboxes.length;
+                let completed = 0;
+                checkboxes.forEach((cb) => {
+                    if (cb.checked) completed += 1;
+                });
+
+                // Calculate the completion percentage
+                const percentage = total
+                    ? Math.round((completed / total) * 100)
+                    : 0;
+
+                // Update progress bar
+                const progressBar = document.getElementById("progressBar");
+                progressBar.style.width = percentage + "%";
+                progressBar.textContent = percentage + "%";
+            }
+        </script>
+    </body>
+</html>
