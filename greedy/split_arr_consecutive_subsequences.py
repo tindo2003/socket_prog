@@ -1,26 +1,15 @@
-from collections import Counter
-from typing import List 
+from typing import List
+from collections import defaultdict
+from heapq import heappush, heappop
+
 
 class Solution:
     def isPossible(self, nums: List[int]) -> bool:
-        ones, twos, threes = Counter(), Counter(), Counter()
+        H = defaultdict(list)
         for num in nums:
-            # print(ones, twos, threes)
-            prev_num = num - 1
-            if ones[prev_num] > 0:
-                ones[prev_num] -= 1
-                twos[num] += 1
-                continue
-            if twos[prev_num] > 0:
-                twos[prev_num] -= 1
-                threes[num] += 1
-                continue
-            # the invariant is keep expanding the long subsequence if possible
-            if threes[prev_num] > 0:
-                threes[prev_num] -= 1
-                threes[num] += 1
-                continue
-            ones[num] += 1
-        if ones.total() > 0 or twos.total() > 0:
-            return False
-        return True
+            if H[num - 1]:
+                shortest_length = heappop(H[num - 1])
+                heappush(H[num], shortest_length + 1)
+            else:
+                heappush(H[num], 1)
+        return all(item >= 3 for k, v in H.items() for item in v)
