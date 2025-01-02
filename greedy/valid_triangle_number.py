@@ -1,17 +1,19 @@
-from typing import List 
+from typing import List
+
+
 class Solution:
     def triangleNumber(self, nums: List[int]) -> int:
-      nums.sort()
-      res = 0 
-      N = len(nums)
-      
-      for third_idx in range(N - 1, -1, -1):
-        first_idx = 0 
-        second_idx = third_idx - 1
-        while first_idx <= second_idx:
-          if nums[first_idx] + nums[second_idx] > nums[third_idx]:
-            res += (second_idx - first_idx)
-            second_idx -= 1
-          else:
-            first_idx += 1
-      return res
+        # the sum of any two sides must be greater than the third side
+        # IDEA: make c fixed. while l < r: move l and r accordingly to the nums[l] + nums[r]
+        N = len(nums)
+        nums.sort()
+        cnt = 0
+        for c in range(N - 1, 1, -1):
+            l, r = 0, c - 1
+            while l < r:
+                if nums[l] + nums[r] > nums[c]:
+                    cnt += r - l
+                    r -= 1
+                else:
+                    l += 1
+        return cnt
