@@ -1,14 +1,16 @@
 from typing import List
-class Solution:    
+
+
+class Solution:
     def twoCitySchedCost(self, costs: List[List[int]]) -> int:
-            new_arr = [(b-a, idx) for idx, (a,b) in enumerate(costs)]
-            new_arr.sort(reverse=False)
-            ans = 0
-            N = len(costs)
-            for i in range(N):
-                idx = new_arr[i][1]
-                if i < N // 2:
-                    ans += costs[idx][1] 
-                else:
-                    ans += costs[idx][0]
-            return ans 
+        diff = [item[0] - item[1] for item in costs]
+        diff_lst = list(enumerate(diff))
+        diff_lst.sort(key=lambda x: x[1])
+        cnt = 0
+        for idx, item in enumerate(diff_lst):
+            i, _ = item
+            if idx < len(costs) // 2:
+                cnt += costs[i][0]
+            else:
+                cnt += costs[i][1]
+        return cnt

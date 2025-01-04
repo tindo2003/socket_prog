@@ -1,30 +1,43 @@
-from typing import List 
+from typing import List
 from bisect import bisect
-from collections import deque 
+from collections import deque
+from math import inf
+
+
 class Solution:
     def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        # Find the indices of the elements:
+        # - res: the index of the largest element in arr that is strictly less than tgt
+        # - res1: the index of the smallest element in arr that is greater than or equal to tgt
         N = len(arr)
-        r = bisect.bisect(arr, x)
-        l = r - 1
-        res = deque()
 
-        while l >= 0 and r < N and k > 0:
-            left_diff = x - arr[l]
-            right_diff = arr[r] - x
-            if left_diff <= right_diff:
-                res.appendleft(arr[l])
-                l -= 1
-            else:
-                res.append(arr[r])
-                r += 1
-            k -= 1
+        def binary_search(tgt):
+            l, r = 0, N - 1
+            res, res1 = -1, N
+            while l <= r:
+                m = (l + r) // 2
+                if tgt <= arr[m]:
+                    res1 = m
+                    r = m - 1
+                else:
+                    res = m
+                    l = m + 1
+            return res, res1
 
-        while k > 0:
+        l, r = binary_search(x)
+        res = deque([])
+        for _ in range(k):
+            l_ele = r_ele = inf
             if l >= 0:
-                res.appendleft(arr[l])
+                l_ele = arr[l]
+            if r < N:
+                r_ele = arr[r]
+            l_d = abs(l_ele - x)
+            r_d = abs(r_ele - x)
+            if l_d <= r_d:
+                res.appendleft(l_ele)
                 l -= 1
-            else:
-                res.append(arr[r])
+            elif r_d < l_d:
+                res.append(r_ele)
                 r += 1
-            k -= 1
         return list(res)
