@@ -4,6 +4,7 @@ from heapq import heappush, heappop
 
 
 class Solution:
+    # make length greater than 3chain of increasing values
     def isPossible(self, nums: List[int]) -> bool:
         H = defaultdict(list)
         for num in nums:
