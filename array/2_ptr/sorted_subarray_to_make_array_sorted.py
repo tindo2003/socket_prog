@@ -3,20 +3,28 @@ from typing import List
 
 class Solution:
     def findLengthOfShortestSubarray(self, arr: List[int]) -> int:
-        N = len(arr)
-        l, r = 0, N - 1
-        for idx in range(N - 1, 0, -1):
-            prev_ele = arr[idx - 1]
-            cur_ele = arr[idx]
-            if prev_ele > cur_ele:
-                break
+        l, r = 0, len(arr) - 1
+        n = len(arr)
+        res = 0
+        r = n - 1
+        while r - 1 >= 0 and arr[r - 1] <= arr[r]:
             r -= 1
-        res = r
+        res = max(res, n - r)
+
         while l < r:
-            while r < N and arr[r] < arr[l]:
+            # move right ptr to the right. because we already exhausted going to the left. we know left ele can only increase from here
+            while r < n and arr[r] < arr[l]:
                 r += 1
-            res = min(res, r - l - 1)
-            if l + 1 >= N or arr[l + 1] < arr[l]:
+            if r >= n:
+                break
+
+            res = max(res, l + 1 + n - r)
+            if l + 1 < n and arr[l + 1] < arr[l]:
                 break
             l += 1
-        return res
+
+        l = 0
+        while l + 1 < n and arr[l + 1] >= arr[l]:
+            l += 1
+        res = max(res, l + 1)
+        return n - res

@@ -25,3 +25,32 @@ class Solution:
             return tmp
 
         return dfs(0, 0)
+
+
+# version 2 using purely dfs
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+        my_sum = sum(nums)
+        if my_sum % 2 != 0:
+            return False
+        target_sum = my_sum // 2
+        my_lst = []
+
+        def dfs(cur_idx, cur_lst, cur_sum):
+            if cur_idx == len(nums):
+                if cur_sum == target_sum:
+                    my_lst.append(cur_lst.copy())
+                return
+            # pick
+            cur_lst.append(nums[cur_idx])
+            dfs(cur_idx + 1, cur_lst, cur_sum + nums[cur_idx])
+            cur_lst.pop()
+            # unpick
+            dfs(cur_idx + 1, cur_lst, cur_sum)
+
+        dfs(0, [], 0)
+
+        if my_lst:
+            return True
+
+        return False
